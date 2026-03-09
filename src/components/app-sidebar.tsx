@@ -1,4 +1,4 @@
-import { ChevronsUpDown, LogOut, Trash2 } from "lucide-react"
+import { ChevronsUpDown, GithubIcon, LogOut, Trash2 } from "lucide-react"
 import { useRepos } from "@/hooks/use-repos"
 import { RepoCombobox } from "@/components/repo-combobox"
 import { PRIcon } from "@/components/pr-icon"
@@ -38,6 +38,15 @@ export function AppSidebar({ onLogout, userLogin, userAvatar, token }: Props) {
         <div className="flex items-center gap-2 px-2 py-1">
           <PRIcon size={24} />
           <span className="text-sm font-semibold">PR Dashboard</span>
+          <a
+            href="https://github.com/paulovictor237/pr-dashboard"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-auto text-muted-foreground hover:text-foreground transition-colors"
+            title="Ver no GitHub"
+          >
+            <GithubIcon className="h-4 w-4" />
+          </a>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
