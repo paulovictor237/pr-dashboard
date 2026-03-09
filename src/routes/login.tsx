@@ -13,6 +13,8 @@ const loginFn = createServerFn({ method: "POST" })
     if (!data.token) return { error: "Informe um token." }
 
     setCookie("gh_token", data.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 30,
