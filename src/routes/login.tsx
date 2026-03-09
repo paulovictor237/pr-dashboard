@@ -1,6 +1,6 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, redirect, useNavigate, useRouter } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
-import { getCookie, setCookie } from "@tanstack/react-start/server"
+import { setCookie } from "@tanstack/react-start/server"
 import { useState, useTransition } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -33,9 +33,8 @@ const loginFn = createServerFn({ method: "POST" })
   })
 
 export const Route = createFileRoute("/login")({
-  beforeLoad: () => {
-    const token = getCookie("gh_token")
-    if (token) throw redirect({ to: "/home" })
+  beforeLoad: ({ context }) => {
+    if (context.token) throw redirect({ to: "/home" })
   },
   component: LoginPage,
 })
@@ -44,6 +43,7 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const navigate = useNavigate()
+  const router = useRouter()
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -54,6 +54,7 @@ function LoginPage() {
       if (result?.error) {
         setError(result.error)
       } else {
+        await router.invalidate()
         await navigate({ to: "/home" })
       }
     })

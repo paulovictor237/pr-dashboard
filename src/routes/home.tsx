@@ -1,8 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, redirect, useNavigate, useRouter } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { deleteCookie } from "@tanstack/react-start/server"
 import { RefreshCw } from "lucide-react"
-import { requireAuth } from "@/lib/auth.server"
 import { fetchCurrentUser } from "@/lib/github"
 import { useDashboard } from "@/hooks/use-dashboard"
 import { useRepos } from "@/hooks/use-repos"
@@ -19,10 +18,12 @@ const logoutFn = createServerFn({ method: "POST" }).handler(() => {
 })
 
 export const Route = createFileRoute("/home")({
-  loader: async () => {
-    const token = await requireAuth()
-    const user = await fetchCurrentUser(token)
-    return { token, user }
+  beforeLoad: ({ context }) => {
+    if (!context.token) throw redirect({ to: "/login" })
+  },
+  loader: async ({ context }) => {
+    const user = await fetchCurrentUser(context.token!)
+    return { token: context.token!, user }
   },
   component: DashboardPage,
 })
@@ -76,6 +77,7 @@ function DashboardPage() {
   const { token, user } = Route.useLoaderData()
   const { repos, refresh: refreshRepos } = useRepos()
   const navigate = useNavigate()
+  const router = useRouter()
   const {
     data: groups,
     isLoading,
@@ -91,6 +93,7 @@ function DashboardPage() {
 
   async function handleLogout() {
     await logoutFn()
+    await router.invalidate()
     await navigate({ to: "/login" })
   }
 
