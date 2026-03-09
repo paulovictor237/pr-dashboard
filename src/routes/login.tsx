@@ -1,10 +1,10 @@
-import { createFileRoute, redirect } from "@tanstack/react-router"
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { getCookie, setCookie } from "@tanstack/react-start/server"
 import { useState, useTransition } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Field, FieldGroup, FieldLabel, FieldError } from "@/components/ui/field"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 
 const loginFn = createServerFn({ method: "POST" })
   .inputValidator((d: { token: string }) => d)
@@ -29,7 +29,7 @@ const loginFn = createServerFn({ method: "POST" })
       maxAge: 60 * 60 * 24 * 30,
     })
 
-    throw redirect({ to: "/home" })
+    return { success: true }
   })
 
 export const Route = createFileRoute("/login")({
@@ -43,14 +43,19 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const navigate = useNavigate()
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const token = (new FormData(e.currentTarget).get("token") as string)?.trim()
+    const token = (new FormData(e.currentTarget).get("token") as string).trim()
     setError(null)
     startTransition(async () => {
       const result = await loginFn({ data: { token } })
-      if (result?.error) setError(result.error)
+      if (result?.error) {
+        setError(result.error)
+      } else {
+        await navigate({ to: "/home" })
+      }
     })
   }
 

@@ -1,6 +1,25 @@
 import * as React from "react"
 
 import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+  CircleAlertIcon,
+  CopyIcon,
+  Loader2Icon,
+  MinusIcon,
+  MoreHorizontalIcon,
+  PlusIcon,
+  SearchIcon,
+  SettingsIcon,
+  ShareIcon,
+  ShoppingBagIcon,
+  TrashIcon,
+} from "lucide-react"
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -43,29 +62,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  CopyIcon,
-  CircleAlertIcon,
-  TrashIcon,
-  ShareIcon,
-  ShoppingBagIcon,
-  MoreHorizontalIcon,
-  Loader2Icon,
-  PlusIcon,
-  MinusIcon,
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  SearchIcon,
-  SettingsIcon,
-  ChevronUpIcon,
-} from "lucide-react"
 
 export function Demo() {
-  const [sliderValue, setSliderValue] = React.useState<number[]>([500])
-  const handleSliderValueChange = React.useCallback((value: number[]) => {
+  const [sliderValue, setSliderValue] = React.useState<Array<number>>([500])
+  const handleSliderValueChange = React.useCallback((value: Array<number>) => {
     setSliderValue(value)
   }, [])
 

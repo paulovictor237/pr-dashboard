@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { deleteCookie } from "@tanstack/react-start/server"
 import { RefreshCw } from "lucide-react"
@@ -8,15 +8,14 @@ import { useDashboard } from "@/hooks/use-dashboard"
 import { useRepos } from "@/hooks/use-repos"
 import { AppSidebar } from "@/components/app-sidebar"
 import { PRGroup } from "@/components/pr-group"
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Empty, EmptyMedia, EmptyHeader, EmptyTitle, EmptyDescription } from "@/components/ui/empty"
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { cn } from "@/lib/utils"
 
-const logoutFn = createServerFn({ method: "POST" }).handler(async () => {
+const logoutFn = createServerFn({ method: "POST" }).handler(() => {
   deleteCookie("gh_token", { path: "/" })
-  throw redirect({ to: "/login" })
 })
 
 export const Route = createFileRoute("/home")({
@@ -76,6 +75,7 @@ const GROUPS = [
 function DashboardPage() {
   const { token, user } = Route.useLoaderData()
   const { repos, refresh: refreshRepos } = useRepos()
+  const navigate = useNavigate()
   const {
     data: groups,
     isLoading,
@@ -91,6 +91,7 @@ function DashboardPage() {
 
   async function handleLogout() {
     await logoutFn()
+    await navigate({ to: "/login" })
   }
 
   const totalOpen = groups

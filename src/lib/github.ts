@@ -1,9 +1,9 @@
 import type {
+  CheckRun,
+  EnrichedPR,
   GitHubUser,
   PullRequest,
   Review,
-  CheckRun,
-  EnrichedPR,
 } from "@/lib/github.types"
 
 const BASE_URL = "https://api.github.com"
@@ -33,8 +33,8 @@ export async function fetchPRsForRepo(
   owner: string,
   repo: string,
   state: "open" | "closed" | "all" = "open"
-): Promise<PullRequest[]> {
-  return githubFetch<PullRequest[]>(
+): Promise<Array<PullRequest>> {
+  return githubFetch<Array<PullRequest>>(
     `/repos/${owner}/${repo}/pulls?state=${state}&per_page=100`,
     token
   )
@@ -45,8 +45,8 @@ export async function fetchPRReviews(
   owner: string,
   repo: string,
   prNumber: number
-): Promise<Review[]> {
-  return githubFetch<Review[]>(
+): Promise<Array<Review>> {
+  return githubFetch<Array<Review>>(
     `/repos/${owner}/${repo}/pulls/${prNumber}/reviews`,
     token
   )
@@ -86,8 +86,8 @@ export async function fetchCheckRuns(
   owner: string,
   repo: string,
   sha: string
-): Promise<CheckRun[]> {
-  const result = await githubFetch<{ check_runs: CheckRun[] }>(
+): Promise<Array<CheckRun>> {
+  const result = await githubFetch<{ check_runs: Array<CheckRun> }>(
     `/repos/${owner}/${repo}/commits/${sha}/check-runs`,
     token
   )
@@ -104,7 +104,7 @@ export async function enrichPR(
   const [reviews, checkRuns] = await Promise.all([
     fetchPRReviews(token, owner, repo, pr.number),
     fetchCheckRuns(token, owner, repo, details.head_sha).catch(
-      () => [] as CheckRun[]
+      () => [] as Array<CheckRun>
     ),
   ])
 
@@ -123,8 +123,8 @@ export async function enrichPR(
 
 export async function fetchAllPRsForRepos(
   token: string,
-  repos: string[] // formato "owner/repo"
-): Promise<EnrichedPR[]> {
+  repos: Array<string> // formato "owner/repo"
+): Promise<Array<EnrichedPR>> {
   const allEnriched = await Promise.all(
     repos.map(async (repoFullName) => {
       const [owner, repo] = repoFullName.split("/")
@@ -147,8 +147,8 @@ export type RepoSuggestion = {
   private: boolean
 }
 
-export async function fetchUserRepos(token: string): Promise<RepoSuggestion[]> {
-  return githubFetch<RepoSuggestion[]>(
+export async function fetchUserRepos(token: string): Promise<Array<RepoSuggestion>> {
+  return githubFetch<Array<RepoSuggestion>>(
     "/user/repos?per_page=100&sort=updated&affiliation=owner,collaborator,organization_member",
     token
   )
@@ -157,8 +157,8 @@ export async function fetchUserRepos(token: string): Promise<RepoSuggestion[]> {
 export async function searchRepos(
   token: string,
   query: string
-): Promise<RepoSuggestion[]> {
-  const result = await githubFetch<{ items: RepoSuggestion[] }>(
+): Promise<Array<RepoSuggestion>> {
+  const result = await githubFetch<{ items: Array<RepoSuggestion> }>(
     `/search/repositories?q=${encodeURIComponent(query)}+in:name&per_page=10&sort=updated`,
     token
   )

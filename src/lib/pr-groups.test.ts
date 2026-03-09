@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest"
-import { groupPullRequests } from "@/lib/pr-groups"
+import { describe, expect, it } from "vitest"
 import type { EnrichedPR } from "@/lib/github.types"
+import { groupPullRequests } from "@/lib/pr-groups"
 
 // Helper para criar PRs com defaults razoáveis
 function makePR(overrides: Partial<EnrichedPR>): EnrichedPR {

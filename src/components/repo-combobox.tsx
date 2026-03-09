@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { Check, ChevronsUpDown, RefreshCw, Search } from "lucide-react"
 import { useQueryClient } from "@tanstack/react-query"
+import type { RepoSuggestion } from "@/lib/github"
 import { useUserRepos } from "@/hooks/use-user-repos"
 import { useSearchRepos } from "@/hooks/use-search-repos"
-import type { RepoSuggestion } from "@/lib/github"
 import { Button } from "@/components/ui/button"
 import {
   Popover,
@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils"
 
 type Props = {
   token: string
-  addedRepos: string[]
+  addedRepos: Array<string>
   onAdd: (repo: string) => void
 }
 

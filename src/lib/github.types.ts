@@ -52,13 +52,13 @@ export type PullRequest = {
   created_at: string
   updated_at: string
   user: PullRequestAuthor
-  requested_reviewers: PullRequestAuthor[]
+  requested_reviewers: Array<PullRequestAuthor>
   additions: number
   deletions: number
   changed_files: number
   // Campos enriquecidos que buscamos separadamente
-  reviews?: Review[]
-  check_runs?: CheckRun[]
+  reviews?: Array<Review>
+  check_runs?: Array<CheckRun>
   comments_count?: number
   commits_count?: number
   repo_full_name?: string

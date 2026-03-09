@@ -4,7 +4,7 @@ import { groupPullRequests } from "@/lib/pr-groups"
 
 export function useDashboard(
   token: string | null,
-  repos: string[],
+  repos: Array<string>,
   login: string
 ) {
   return useQuery({

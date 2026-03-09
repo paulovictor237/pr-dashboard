@@ -3,13 +3,13 @@ import type { EnrichedPR } from "@/lib/github.types"
 export const BUSINESS_DAYS_THRESHOLD = 5
 
 type PRGroups = {
-  unlock: EnrichedPR[] // 1. Destravar
-  inbox: EnrichedPR[] // 2. Inbox
-  quickWins: EnrichedPR[] // 3. Quick Wins
-  stale: EnrichedPR[] // 4. Alerta (Stale)
-  explore: EnrichedPR[] // 5. Exploração
-  approved: EnrichedPR[] // 6. Aprovados
-  merged: EnrichedPR[] // 7. Mergeados
+  unlock: Array<EnrichedPR> // 1. Destravar
+  inbox: Array<EnrichedPR> // 2. Inbox
+  quickWins: Array<EnrichedPR> // 3. Quick Wins
+  stale: Array<EnrichedPR> // 4. Alerta (Stale)
+  explore: Array<EnrichedPR> // 5. Exploração
+  approved: Array<EnrichedPR> // 6. Aprovados
+  merged: Array<EnrichedPR> // 7. Mergeados
 }
 
 function businessDaysSince(dateStr: string): number {
@@ -35,7 +35,8 @@ function isApprovedByMe(pr: EnrichedPR, me: string): boolean {
     .sort(
       (a, b) =>
         new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime()
-    )[0]
+    )
+    .at(0)
   return myLatestReview?.state === "APPROVED"
 }
 
@@ -45,7 +46,8 @@ function hasNewActivityAfterMyApproval(pr: EnrichedPR, me: string): boolean {
     .sort(
       (a, b) =>
         new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime()
-    )[0]
+    )
+    .at(0)
   if (!myLatestApproval) return false
   return new Date(pr.updated_at) > new Date(myLatestApproval.submitted_at)
 }
@@ -94,12 +96,13 @@ function isUnlock(pr: EnrichedPR, me: string): boolean {
     .sort(
       (a, b) =>
         new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime()
-    )[0]
+    )
+    .at(0)
   if (!myLastReview) return false
   return new Date(pr.updated_at) > new Date(myLastReview.submitted_at)
 }
 
-export function groupPullRequests(prs: EnrichedPR[], me: string): PRGroups {
+export function groupPullRequests(prs: Array<EnrichedPR>, me: string): PRGroups {
   const groups: PRGroups = {
     unlock: [],
     inbox: [],

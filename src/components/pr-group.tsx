@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils"
 type Props = {
   title: string
   icon: string
-  prs: EnrichedPR[]
+  prs: Array<EnrichedPR>
   isLoading?: boolean
   description?: string
 }

@@ -1,18 +1,18 @@
 import {
+  CheckCircle2,
+  Clock,
   ExternalLink,
   GitBranch,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  MessageSquare,
   Loader2,
+  MessageSquare,
+  XCircle,
 } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import type { EnrichedPR } from "@/lib/github.types"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Tooltip,
   TooltipContent,
@@ -107,7 +107,7 @@ export function PRCard({ pr }: Props) {
           <TooltipTrigger asChild>
             <Avatar size="sm" className="mt-0.5 shrink-0 cursor-default">
               <AvatarImage src={pr.user.avatar_url} alt={pr.user.login} />
-              <AvatarFallback>{pr.user.login[0]?.toUpperCase()}</AvatarFallback>
+              <AvatarFallback>{pr.user.login[0].toUpperCase()}</AvatarFallback>
             </Avatar>
           </TooltipTrigger>
           <TooltipContent>Autor: {pr.user.login}</TooltipContent>

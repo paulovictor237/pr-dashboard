@@ -1,7 +1,7 @@
 import { redirect } from "@tanstack/react-router"
-import { getCookie, deleteCookie } from "@tanstack/react-start/server"
+import { deleteCookie, getCookie } from "@tanstack/react-start/server"
 
-export async function requireAuth(): Promise<string> {
+export function requireAuth(): string {
   const token = getCookie("gh_token")
   if (!token) {
     throw redirect({ to: "/login" })

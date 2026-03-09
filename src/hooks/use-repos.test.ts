@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest"
-import { parseRepos, addRepo, removeRepo } from "@/hooks/use-repos"
+import { describe, expect, it } from "vitest"
+import { addRepo, parseRepos, removeRepo } from "@/hooks/use-repos"
 
 describe("repo management (pure functions)", () => {
   it("parseRepos retorna array vazio para string vazia", () => {

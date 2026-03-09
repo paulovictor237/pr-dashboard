@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 const STORAGE_KEY = "pr-dashboard:repos"
 
-export function parseRepos(raw: string): string[] {
+export function parseRepos(raw: string): Array<string> {
   if (!raw) return []
   try {
     const parsed = JSON.parse(raw)
@@ -12,17 +12,17 @@ export function parseRepos(raw: string): string[] {
   }
 }
 
-export function addRepo(repos: string[], repo: string): string[] {
+export function addRepo(repos: Array<string>, repo: string): Array<string> {
   if (repos.includes(repo)) return repos
   return [...repos, repo]
 }
 
-export function removeRepo(repos: string[], repo: string): string[] {
+export function removeRepo(repos: Array<string>, repo: string): Array<string> {
   return repos.filter((r) => r !== repo)
 }
 
 export function useRepos() {
-  const [repos, setRepos] = useState<string[]>([])
+  const [repos, setRepos] = useState<Array<string>>([])
 
   const load = useCallback(() => {
     const stored = localStorage.getItem(STORAGE_KEY) ?? ""
@@ -50,7 +50,7 @@ export function useRepos() {
     }
   }, [load])
 
-  const save = useCallback((updated: string[]) => {
+  const save = useCallback((updated: Array<string>) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
     setRepos(updated)
     // Notify other instances in the same tab

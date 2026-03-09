@@ -44,7 +44,7 @@ export function AppSidebar({ onLogout, userLogin, userAvatar, token }: Props) {
             <SidebarMenuButton>
               <Avatar size="sm">
                 <AvatarImage src={userAvatar} alt={userLogin} />
-                <AvatarFallback>{userLogin[0]?.toUpperCase()}</AvatarFallback>
+                <AvatarFallback>{userLogin[0].toUpperCase()}</AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{userLogin}</p>
