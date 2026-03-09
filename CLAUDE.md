@@ -10,7 +10,7 @@ npm run dev          # Start dev server (SSR via React Router)
 
 # Build & Type Check
 npm run build        # Production build
-npm run typecheck    # react-router typegen + tsc
+npm run typecheck    # tsc --noEmit
 
 # Testing
 npm test             # Run all tests (vitest)
@@ -22,7 +22,7 @@ npm run format       # Prettier format (ts, tsx)
 
 ## Architecture
 
-**Stack:** React Router 7 (SSR), React 19, TypeScript, TanStack Query, shadcn/ui, Tailwind CSS v4, next-themes, recharts, sonner, vaul, react-day-picker, react-resizable-panels.
+**Stack:** TanStack Start (SSR), TanStack Router, React 19, TypeScript, TanStack Query, shadcn/ui, Tailwind CSS v4, next-themes, recharts, sonner, vaul, react-day-picker, react-resizable-panels.
 
 **PR Dashboard app** that authenticates with a GitHub PAT, fetches PRs from selected repos, and groups them into priority categories for a team workflow.
 
@@ -53,7 +53,6 @@ npm run format       # Prettier format (ts, tsx)
 - `lib/github.ts` — GitHub REST API calls (users, PRs, reviews, check runs)
 - `lib/github.types.ts` — TypeScript types for GitHub API responses
 - `lib/pr-groups.ts` — Pure grouping logic (unit tested)
-- `lib/session.server.ts` — Cookie utilities (create/read/clear token)
 - `lib/auth.server.ts` — `requireAuth()` middleware, logout headers
 - `lib/query-client.ts` — TanStack Query client configuration
 - `hooks/use-dashboard.ts` — Main data hook (TanStack Query)
