@@ -12,17 +12,6 @@ const loginFn = createServerFn({ method: "POST" })
     const { data } = ctx
     if (!data.token) return { error: "Informe um token." }
 
-    const response = await fetch("https://api.github.com/user", {
-      headers: {
-        Authorization: `Bearer ${data.token}`,
-        Accept: "application/vnd.github+json",
-      },
-    })
-
-    if (!response.ok) {
-      return { error: "Token inválido ou sem permissão. Verifique os escopos." }
-    }
-
     setCookie("gh_token", data.token, {
       sameSite: "lax",
       path: "/",
@@ -50,6 +39,19 @@ function LoginPage() {
     const token = (new FormData(e.currentTarget).get("token") as string).trim()
     setError(null)
     startTransition(async () => {
+      // Valida o token client-side para evitar bloqueio do GitHub em Cloudflare Workers
+      const ghResponse = await fetch("https://api.github.com/user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github+json",
+        },
+      })
+
+      if (!ghResponse.ok) {
+        setError("Token inválido ou sem permissão. Verifique os escopos.")
+        return
+      }
+
       const result = await loginFn({ data: { token } })
       if (result?.error) {
         setError(result.error)
