@@ -1,30 +1,32 @@
-import { redirect } from "react-router"
-import type { Route } from "./+types/home"
+import { createFileRoute, redirect } from "@tanstack/react-router"
+import { createServerFn } from "@tanstack/react-start"
+import { deleteCookie } from "@tanstack/react-start/server"
 import { RefreshCw } from "lucide-react"
-import { requireAuth } from "~/lib/auth.server"
-import { fetchCurrentUser } from "~/lib/github"
-import { clearTokenCookie } from "~/lib/session.server"
-import { useDashboard } from "~/hooks/use-dashboard"
-import { useRepos } from "~/hooks/use-repos"
-import { AppSidebar } from "~/components/app-sidebar"
-import { PRGroup } from "~/components/pr-group"
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "~/components/ui/sidebar"
-import { Button } from "~/components/ui/button"
-import { Separator } from "~/components/ui/separator"
-import { Empty, EmptyMedia, EmptyHeader, EmptyTitle, EmptyDescription } from "~/components/ui/empty"
-import { cn } from "~/lib/utils"
+import { requireAuth } from "@/lib/auth.server"
+import { fetchCurrentUser } from "@/lib/github"
+import { useDashboard } from "@/hooks/use-dashboard"
+import { useRepos } from "@/hooks/use-repos"
+import { AppSidebar } from "@/components/app-sidebar"
+import { PRGroup } from "@/components/pr-group"
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+import { Empty, EmptyMedia, EmptyHeader, EmptyTitle, EmptyDescription } from "@/components/ui/empty"
+import { cn } from "@/lib/utils"
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const token = await requireAuth(request)
-  const user = await fetchCurrentUser(token)
-  return { token, user }
-}
+const logoutFn = createServerFn({ method: "POST" }).handler(async () => {
+  deleteCookie("gh_token", { path: "/" })
+  throw redirect({ to: "/login" })
+})
 
-export async function action({ request }: Route.ActionArgs) {
-  throw redirect("/login", {
-    headers: { "Set-Cookie": clearTokenCookie() },
-  })
-}
+export const Route = createFileRoute("/home")({
+  loader: async () => {
+    const token = await requireAuth()
+    const user = await fetchCurrentUser(token)
+    return { token, user }
+  },
+  component: DashboardPage,
+})
 
 const GROUPS = [
   {
@@ -71,8 +73,8 @@ const GROUPS = [
   },
 ]
 
-export default function DashboardPage({ loaderData }: Route.ComponentProps) {
-  const { token, user } = loaderData
+function DashboardPage() {
+  const { token, user } = Route.useLoaderData()
   const { repos, refresh: refreshRepos } = useRepos()
   const {
     data: groups,
@@ -88,8 +90,7 @@ export default function DashboardPage({ loaderData }: Route.ComponentProps) {
   }
 
   async function handleLogout() {
-    await fetch("/?index", { method: "POST" })
-    window.location.href = "/login"
+    await logoutFn()
   }
 
   const totalOpen = groups

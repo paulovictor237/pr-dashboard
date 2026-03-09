@@ -10,12 +10,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "~/components/ui/alert-dialog"
-import { Badge } from "~/components/ui/badge"
-import { Button } from "~/components/ui/button"
-import { ButtonGroup } from "~/components/ui/button-group"
-import { Card, CardContent } from "~/components/ui/card"
-import { Checkbox } from "~/components/ui/checkbox"
+} from "@/components/ui/alert-dialog"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { ButtonGroup } from "@/components/ui/button-group"
+import { Card, CardContent } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,29 +24,44 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
-import { Field, FieldGroup } from "~/components/ui/field"
+} from "@/components/ui/dropdown-menu"
+import { Field, FieldGroup } from "@/components/ui/field"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
   InputGroupText,
-} from "~/components/ui/input-group"
+} from "@/components/ui/input-group"
 import {
   Item,
   ItemActions,
   ItemContent,
   ItemDescription,
   ItemTitle,
-} from "~/components/ui/item"
+} from "@/components/ui/item"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Slider } from "@/components/ui/slider"
+import { Switch } from "@/components/ui/switch"
+import { Textarea } from "@/components/ui/textarea"
 import {
-  RadioGroup,
-  RadioGroupItem,
-} from "~/components/ui/radio-group"
-import { Slider } from "~/components/ui/slider"
-import { Switch } from "~/components/ui/switch"
-import { Textarea } from "~/components/ui/textarea"
-import { CopyIcon, CircleAlertIcon, TrashIcon, ShareIcon, ShoppingBagIcon, MoreHorizontalIcon, Loader2Icon, PlusIcon, MinusIcon, ArrowLeftIcon, ArrowRightIcon, CheckIcon, ChevronDownIcon, ChevronRightIcon, SearchIcon, SettingsIcon, ChevronUpIcon } from "lucide-react"
+  CopyIcon,
+  CircleAlertIcon,
+  TrashIcon,
+  ShareIcon,
+  ShoppingBagIcon,
+  MoreHorizontalIcon,
+  Loader2Icon,
+  PlusIcon,
+  MinusIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  SearchIcon,
+  SettingsIcon,
+  ChevronUpIcon,
+} from "lucide-react"
 
 export function Demo() {
   const [sliderValue, setSliderValue] = React.useState<number[]>([500])
@@ -106,68 +121,52 @@ export function Demo() {
             <CardContent>
               <div className="grid grid-cols-8 place-items-center gap-4">
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <CopyIcon
-                  />
+                  <CopyIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <CircleAlertIcon
-                  />
+                  <CircleAlertIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <TrashIcon
-                  />
+                  <TrashIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <ShareIcon
-                  />
+                  <ShareIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <ShoppingBagIcon
-                  />
+                  <ShoppingBagIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <MoreHorizontalIcon
-                  />
+                  <MoreHorizontalIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <Loader2Icon
-                  />
+                  <Loader2Icon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <PlusIcon
-                  />
+                  <PlusIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <MinusIcon
-                  />
+                  <MinusIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <ArrowLeftIcon
-                  />
+                  <ArrowLeftIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <ArrowRightIcon
-                  />
+                  <ArrowRightIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <CheckIcon
-                  />
+                  <CheckIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <ChevronDownIcon
-                  />
+                  <ChevronDownIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <ChevronRightIcon
-                  />
+                  <ChevronRightIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <SearchIcon
-                  />
+                  <SearchIcon />
                 </Card>
                 <Card className="flex size-8 items-center justify-center rounded-md p-0 ring ring-border *:[svg]:size-4">
-                  <SettingsIcon
-                  />
+                  <SettingsIcon />
                 </Card>
               </div>
             </CardContent>
@@ -212,8 +211,7 @@ export function Demo() {
                     <InputGroupInput placeholder="Name" />
                     <InputGroupAddon align="inline-end">
                       <InputGroupText>
-                        <SearchIcon
-                        />
+                        <SearchIcon />
                       </InputGroupText>
                     </InputGroupAddon>
                   </InputGroup>
@@ -269,8 +267,7 @@ export function Demo() {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="outline" size="icon">
-                        <ChevronUpIcon
-                        />
+                        <ChevronUpIcon />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent

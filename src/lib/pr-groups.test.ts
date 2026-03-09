@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
-import { groupPullRequests, BUSINESS_DAYS_THRESHOLD } from "~/lib/pr-groups"
-import type { EnrichedPR } from "~/lib/github.types"
+import { groupPullRequests } from "@/lib/pr-groups"
+import type { EnrichedPR } from "@/lib/github.types"
 
 // Helper para criar PRs com defaults razoáveis
 function makePR(overrides: Partial<EnrichedPR>): EnrichedPR {
@@ -42,14 +42,23 @@ describe("groupPullRequests", () => {
     const approvedAt = new Date(Date.now() - 1000).toISOString()
     const pr = makePR({
       updated_at: new Date(Date.now() - 2000).toISOString(),
-      reviews: [{ id: 1, user: { login: ME, avatar_url: "" }, state: "APPROVED", submitted_at: approvedAt }],
+      reviews: [
+        {
+          id: 1,
+          user: { login: ME, avatar_url: "" },
+          state: "APPROVED",
+          submitted_at: approvedAt,
+        },
+      ],
     })
     const result = groupPullRequests([pr], ME)
     expect(result.approved.map((p) => p.id)).toContain(pr.id)
   })
 
   it("coloca PR stale no grupo Alerta", () => {
-    const oldDate = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
+    const oldDate = new Date(
+      Date.now() - 14 * 24 * 60 * 60 * 1000
+    ).toISOString()
     // PR grande (não se encaixa como Quick Win) e sem atividade por 8 dias
     const pr = makePR({
       updated_at: oldDate,
@@ -86,8 +95,17 @@ describe("groupPullRequests", () => {
 
   it("exclui PRs prontos para merge (aprovação de terceiros + CI verde)", () => {
     const pr = makePR({
-      reviews: [{ id: 1, user: { login: "other", avatar_url: "" }, state: "APPROVED", submitted_at: new Date().toISOString() }],
-      check_runs: [{ id: 1, name: "ci", status: "completed", conclusion: "success" }],
+      reviews: [
+        {
+          id: 1,
+          user: { login: "other", avatar_url: "" },
+          state: "APPROVED",
+          submitted_at: new Date().toISOString(),
+        },
+      ],
+      check_runs: [
+        { id: 1, name: "ci", status: "completed", conclusion: "success" },
+      ],
     })
     const result = groupPullRequests([pr], ME)
     const allGroupIds = [

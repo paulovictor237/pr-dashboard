@@ -1,11 +1,15 @@
 import { useState } from "react"
 import { Check, ChevronsUpDown, RefreshCw, Search } from "lucide-react"
 import { useQueryClient } from "@tanstack/react-query"
-import { useUserRepos } from "~/hooks/use-user-repos"
-import { useSearchRepos } from "~/hooks/use-search-repos"
-import type { RepoSuggestion } from "~/lib/github"
-import { Button } from "~/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover"
+import { useUserRepos } from "@/hooks/use-user-repos"
+import { useSearchRepos } from "@/hooks/use-search-repos"
+import type { RepoSuggestion } from "@/lib/github"
+import { Button } from "@/components/ui/button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import {
   Command,
   CommandEmpty,
@@ -14,9 +18,9 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "~/components/ui/command"
-import { Spinner } from "~/components/ui/spinner"
-import { cn } from "~/lib/utils"
+} from "@/components/ui/command"
+import { Spinner } from "@/components/ui/spinner"
+import { cn } from "@/lib/utils"
 
 type Props = {
   token: string
@@ -30,7 +34,8 @@ export function RepoCombobox({ token, addedRepos, onAdd }: Props) {
   const queryClient = useQueryClient()
 
   const { data: userRepos = [], isFetching: fetchingUser } = useUserRepos(token)
-  const { data: searchResults = [], isFetching: loadingSearch } = useSearchRepos(token, query)
+  const { data: searchResults = [], isFetching: loadingSearch } =
+    useSearchRepos(token, query)
 
   function handleRefresh() {
     queryClient.invalidateQueries({ queryKey: ["user-repos", token] })
@@ -40,10 +45,14 @@ export function RepoCombobox({ token, addedRepos, onAdd }: Props) {
   const filteredUserRepos =
     query.length === 0
       ? userRepos
-      : userRepos.filter((r) => r.full_name.toLowerCase().includes(query.toLowerCase()))
+      : userRepos.filter((r) =>
+          r.full_name.toLowerCase().includes(query.toLowerCase())
+        )
 
   const userRepoNames = new Set(userRepos.map((r) => r.full_name))
-  const extraSearchResults = searchResults.filter((r) => !userRepoNames.has(r.full_name))
+  const extraSearchResults = searchResults.filter(
+    (r) => !userRepoNames.has(r.full_name)
+  )
 
   function handleSelect(repo: RepoSuggestion) {
     if (addedRepos.includes(repo.full_name)) return
@@ -52,7 +61,8 @@ export function RepoCombobox({ token, addedRepos, onAdd }: Props) {
     setOpen(false)
   }
 
-  const hasResults = filteredUserRepos.length > 0 || extraSearchResults.length > 0
+  const hasResults =
+    filteredUserRepos.length > 0 || extraSearchResults.length > 0
 
   return (
     <div className="flex items-center gap-1">
@@ -83,7 +93,9 @@ export function RepoCombobox({ token, addedRepos, onAdd }: Props) {
             <CommandList>
               {!hasResults && !loadingSearch && (
                 <CommandEmpty className="text-xs">
-                  {query.length >= 2 ? "Nenhum repositório encontrado" : "Digite para buscar"}
+                  {query.length >= 2
+                    ? "Nenhum repositório encontrado"
+                    : "Digite para buscar"}
                 </CommandEmpty>
               )}
 
@@ -106,9 +118,8 @@ export function RepoCombobox({ token, addedRepos, onAdd }: Props) {
                 </CommandGroup>
               )}
 
-              {filteredUserRepos.length > 0 && extraSearchResults.length > 0 && (
-                <CommandSeparator />
-              )}
+              {filteredUserRepos.length > 0 &&
+                extraSearchResults.length > 0 && <CommandSeparator />}
 
               {extraSearchResults.length > 0 && (
                 <CommandGroup heading="Busca no GitHub">
@@ -143,7 +154,9 @@ export function RepoCombobox({ token, addedRepos, onAdd }: Props) {
         title="Recarregar repositórios"
         className="size-8 shrink-0"
       >
-        <RefreshCw className={cn("h-3.5 w-3.5", fetchingUser && "animate-spin")} />
+        <RefreshCw
+          className={cn("h-3.5 w-3.5", fetchingUser && "animate-spin")}
+        />
       </Button>
     </div>
   )

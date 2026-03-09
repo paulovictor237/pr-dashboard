@@ -9,15 +9,15 @@ import {
 } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from "date-fns/locale"
-import type { EnrichedPR } from "~/lib/github.types"
-import { Badge } from "~/components/ui/badge"
-import { Card, CardContent } from "~/components/ui/card"
-import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar"
+import type { EnrichedPR } from "@/lib/github.types"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "~/components/ui/tooltip"
+} from "@/components/ui/tooltip"
 
 type Props = {
   pr: EnrichedPR

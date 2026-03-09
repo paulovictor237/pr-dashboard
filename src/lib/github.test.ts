@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import { fetchPRsForRepo, fetchCurrentUser } from "~/lib/github"
+import { fetchCurrentUser } from "@/lib/github"
 
 describe("github client", () => {
   beforeEach(() => {
@@ -7,7 +7,12 @@ describe("github client", () => {
   })
 
   it("fetchCurrentUser retorna o usuário autenticado", async () => {
-    const mockUser = { id: 1, login: "testuser", name: "Test User", avatar_url: "" }
+    const mockUser = {
+      id: 1,
+      login: "testuser",
+      name: "Test User",
+      avatar_url: "",
+    }
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve(mockUser),
@@ -17,7 +22,9 @@ describe("github client", () => {
     expect(user.login).toBe("testuser")
     expect(fetch).toHaveBeenCalledWith(
       "https://api.github.com/user",
-      expect.objectContaining({ headers: expect.objectContaining({ Authorization: "Bearer gh_token" }) })
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: "Bearer gh_token" }),
+      })
     )
   })
 
@@ -28,6 +35,8 @@ describe("github client", () => {
       statusText: "Unauthorized",
     } as Response)
 
-    await expect(fetchCurrentUser("bad_token")).rejects.toThrow("GitHub API error: 401")
+    await expect(fetchCurrentUser("bad_token")).rejects.toThrow(
+      "GitHub API error: 401"
+    )
   })
 })

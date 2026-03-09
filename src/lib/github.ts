@@ -1,4 +1,10 @@
-import type { GitHubUser, PullRequest, Review, CheckRun, EnrichedPR } from "~/lib/github.types"
+import type {
+  GitHubUser,
+  PullRequest,
+  Review,
+  CheckRun,
+  EnrichedPR,
+} from "@/lib/github.types"
 
 const BASE_URL = "https://api.github.com"
 
@@ -11,7 +17,9 @@ async function githubFetch<T>(path: string, token: string): Promise<T> {
     },
   })
   if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status} ${response.statusText}`)
+    throw new Error(
+      `GitHub API error: ${response.status} ${response.statusText}`
+    )
   }
   return response.json() as Promise<T>
 }
@@ -49,7 +57,13 @@ async function fetchPRDetail(
   owner: string,
   repo: string,
   prNumber: number
-): Promise<{ head_sha: string; additions: number; deletions: number; changed_files: number; comments_count: number }> {
+): Promise<{
+  head_sha: string
+  additions: number
+  deletions: number
+  changed_files: number
+  comments_count: number
+}> {
   const pr = await githubFetch<{
     head: { sha: string }
     additions: number
@@ -89,7 +103,9 @@ export async function enrichPR(
   const details = await fetchPRDetail(token, owner, repo, pr.number)
   const [reviews, checkRuns] = await Promise.all([
     fetchPRReviews(token, owner, repo, pr.number),
-    fetchCheckRuns(token, owner, repo, details.head_sha).catch(() => [] as CheckRun[]),
+    fetchCheckRuns(token, owner, repo, details.head_sha).catch(
+      () => [] as CheckRun[]
+    ),
   ])
 
   return {
@@ -138,7 +154,10 @@ export async function fetchUserRepos(token: string): Promise<RepoSuggestion[]> {
   )
 }
 
-export async function searchRepos(token: string, query: string): Promise<RepoSuggestion[]> {
+export async function searchRepos(
+  token: string,
+  query: string
+): Promise<RepoSuggestion[]> {
   const result = await githubFetch<{ items: RepoSuggestion[] }>(
     `/search/repositories?q=${encodeURIComponent(query)}+in:name&per_page=10&sort=updated`,
     token

@@ -1,18 +1,14 @@
-import { redirect } from "react-router"
-import { getTokenFromCookieHeader, clearTokenCookie } from "~/lib/session.server"
+import { redirect } from "@tanstack/react-router"
+import { getCookie, deleteCookie } from "@tanstack/react-start/server"
 
-export async function requireAuth(request: Request): Promise<string> {
-  const cookieHeader = request.headers.get("Cookie") ?? ""
-  const token = getTokenFromCookieHeader(cookieHeader)
+export async function requireAuth(): Promise<string> {
+  const token = getCookie("gh_token")
   if (!token) {
-    throw redirect("/login")
+    throw redirect({ to: "/login" })
   }
   return token
 }
 
-export function logoutHeaders(): HeadersInit {
-  return {
-    "Set-Cookie": clearTokenCookie(),
-    Location: "/login",
-  }
+export function clearAuth(): void {
+  deleteCookie("gh_token", { path: "/" })
 }

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
-import { searchRepos } from "~/lib/github"
+import { searchRepos } from "@/lib/github"
 
 export function useSearchRepos(token: string, query: string) {
   const [debouncedQuery, setDebouncedQuery] = useState(query)

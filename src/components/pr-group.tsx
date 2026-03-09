@@ -1,13 +1,21 @@
 import { useState } from "react"
 import { ChevronDown } from "lucide-react"
-import type { EnrichedPR } from "~/lib/github.types"
-import { PRCard } from "~/components/pr-card"
-import { Badge } from "~/components/ui/badge"
-import { Button } from "~/components/ui/button"
-import { Skeleton } from "~/components/ui/skeleton"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "~/components/ui/collapsible"
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip"
-import { cn } from "~/lib/utils"
+import type { EnrichedPR } from "@/lib/github.types"
+import { PRCard } from "@/components/pr-card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { cn } from "@/lib/utils"
 
 type Props = {
   title: string
@@ -28,7 +36,7 @@ export function PRGroup({ title, icon, prs, isLoading, description }: Props) {
         {!isLoading && <Badge variant="secondary">{prs.length}</Badge>}
         <ChevronDown
           className={cn(
-            "text-muted-foreground h-3.5 w-3.5 transition-transform duration-200",
+            "h-3.5 w-3.5 text-muted-foreground transition-transform duration-200",
             open && "rotate-180"
           )}
         />
@@ -37,7 +45,11 @@ export function PRGroup({ title, icon, prs, isLoading, description }: Props) {
   )
 
   return (
-    <Collapsible open={open} onOpenChange={setOpen} className="flex flex-col gap-3">
+    <Collapsible
+      open={open}
+      onOpenChange={setOpen}
+      className="flex flex-col gap-3"
+    >
       {description ? (
         <Tooltip>
           <TooltipTrigger asChild>
@@ -57,9 +69,13 @@ export function PRGroup({ title, icon, prs, isLoading, description }: Props) {
             <Skeleton key={i} className="h-16 w-full rounded-md" />
           ))
         ) : prs.length === 0 ? (
-          <p className="text-muted-foreground text-xs italic">Nenhum PR nessa categoria</p>
+          <p className="text-xs text-muted-foreground italic">
+            Nenhum PR nessa categoria
+          </p>
         ) : (
-          prs.map((pr) => <PRCard key={`${pr.repo_full_name}-${pr.number}`} pr={pr} />)
+          prs.map((pr) => (
+            <PRCard key={`${pr.repo_full_name}-${pr.number}`} pr={pr} />
+          ))
         )}
       </CollapsibleContent>
     </Collapsible>

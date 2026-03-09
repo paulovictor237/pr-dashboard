@@ -1,8 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
-import { fetchAllPRsForRepos } from "~/lib/github"
-import { groupPullRequests } from "~/lib/pr-groups"
+import { fetchAllPRsForRepos } from "@/lib/github"
+import { groupPullRequests } from "@/lib/pr-groups"
 
-export function useDashboard(token: string | null, repos: string[], login: string) {
+export function useDashboard(
+  token: string | null,
+  repos: string[],
+  login: string
+) {
   return useQuery({
     queryKey: ["dashboard", repos, login],
     queryFn: () => fetchAllPRsForRepos(token!, repos),

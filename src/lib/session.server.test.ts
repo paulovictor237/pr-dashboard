@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest"
-import { createTokenCookie, getTokenFromCookieHeader, clearTokenCookie } from "~/lib/session.server"
+import {
+  createTokenCookie,
+  getTokenFromCookieHeader,
+  clearTokenCookie,
+} from "@/lib/session.server"
 
 describe("session.server", () => {
   it("creates a cookie string with the token", () => {

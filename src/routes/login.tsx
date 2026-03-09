@@ -1,47 +1,58 @@
-import { redirect, Form, useActionData, useNavigation } from "react-router"
-import type { Route } from "./+types/login"
-import { getTokenFromCookieHeader, createTokenCookie } from "~/lib/session.server"
-import { Input } from "~/components/ui/input"
-import { Button } from "~/components/ui/button"
-import { Field, FieldGroup, FieldLabel, FieldError } from "~/components/ui/field"
+import { createFileRoute, redirect } from "@tanstack/react-router"
+import { createServerFn } from "@tanstack/react-start"
+import { getCookie, setCookie } from "@tanstack/react-start/server"
+import { useState, useTransition } from "react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Field, FieldGroup, FieldLabel, FieldError } from "@/components/ui/field"
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const cookieHeader = request.headers.get("Cookie") ?? ""
-  const token = getTokenFromCookieHeader(cookieHeader)
-  if (token) {
-    throw redirect("/")
-  }
-  return null
-}
+const loginFn = createServerFn({ method: "POST" })
+  .inputValidator((d: { token: string }) => d)
+  .handler(async (ctx) => {
+    const { data } = ctx
+    if (!data.token) return { error: "Informe um token." }
 
-export async function action({ request }: Route.ActionArgs) {
-  const formData = await request.formData()
-  const token = (formData.get("token") as string)?.trim()
+    const response = await fetch("https://api.github.com/user", {
+      headers: {
+        Authorization: `Bearer ${data.token}`,
+        Accept: "application/vnd.github+json",
+      },
+    })
 
-  if (!token) {
-    return { error: "Informe um token." }
-  }
+    if (!response.ok) {
+      return { error: "Token inválido ou sem permissão. Verifique os escopos." }
+    }
 
-  const response = await fetch("https://api.github.com/user", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/vnd.github+json",
-    },
+    setCookie("gh_token", data.token, {
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    })
+
+    throw redirect({ to: "/home" })
   })
 
-  if (!response.ok) {
-    return { error: "Token inválido ou sem permissão. Verifique os escopos." }
+export const Route = createFileRoute("/login")({
+  beforeLoad: () => {
+    const token = getCookie("gh_token")
+    if (token) throw redirect({ to: "/home" })
+  },
+  component: LoginPage,
+})
+
+function LoginPage() {
+  const [error, setError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const token = (new FormData(e.currentTarget).get("token") as string)?.trim()
+    setError(null)
+    startTransition(async () => {
+      const result = await loginFn({ data: { token } })
+      if (result?.error) setError(result.error)
+    })
   }
-
-  throw redirect("/", {
-    headers: { "Set-Cookie": createTokenCookie(token) },
-  })
-}
-
-export default function LoginPage() {
-  const actionData = useActionData<typeof action>()
-  const navigation = useNavigation()
-  const isSubmitting = navigation.state === "submitting"
 
   return (
     <div className="flex min-h-svh items-center justify-center bg-background">
@@ -53,9 +64,9 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <Form method="post" className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <FieldGroup>
-            <Field data-invalid={!!actionData?.error || undefined}>
+            <Field data-invalid={!!error || undefined}>
               <FieldLabel htmlFor="token">Personal Access Token</FieldLabel>
               <Input
                 id="token"
@@ -64,16 +75,16 @@ export default function LoginPage() {
                 placeholder="ghp_..."
                 autoComplete="off"
                 required
-                aria-invalid={!!actionData?.error || undefined}
+                aria-invalid={!!error || undefined}
               />
-              {actionData?.error && <FieldError>{actionData.error}</FieldError>}
+              {error && <FieldError>{error}</FieldError>}
             </Field>
           </FieldGroup>
 
-          <Button type="submit" disabled={isSubmitting} className="w-full">
-            {isSubmitting ? "Validando..." : "Entrar"}
+          <Button type="submit" disabled={isPending} className="w-full">
+            {isPending ? "Validando..." : "Entrar"}
           </Button>
-        </Form>
+        </form>
 
         <p className="text-muted-foreground text-center text-xs">
           Precisa de um token?{" "}

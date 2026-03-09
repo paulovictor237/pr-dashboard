@@ -1,7 +1,7 @@
-import { Trash2, LogOut, ChevronsUpDown } from "lucide-react"
-import { useRepos } from "~/hooks/use-repos"
-import { RepoCombobox } from "~/components/repo-combobox"
-import { PRIcon } from "~/components/pr-icon"
+import { ChevronsUpDown, LogOut, Trash2 } from "lucide-react"
+import { useRepos } from "@/hooks/use-repos"
+import { RepoCombobox } from "@/components/repo-combobox"
+import { PRIcon } from "@/components/pr-icon"
 import {
   Sidebar,
   SidebarContent,
@@ -10,17 +10,17 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
   SidebarMenuAction,
-} from "~/components/ui/sidebar"
-import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar"
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu"
 
 type Props = {
   onLogout: () => void

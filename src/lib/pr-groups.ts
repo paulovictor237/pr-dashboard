@@ -1,15 +1,15 @@
-import type { EnrichedPR } from "~/lib/github.types"
+import type { EnrichedPR } from "@/lib/github.types"
 
 export const BUSINESS_DAYS_THRESHOLD = 5
 
 type PRGroups = {
-  unlock: EnrichedPR[]    // 1. Destravar
-  inbox: EnrichedPR[]     // 2. Inbox
+  unlock: EnrichedPR[] // 1. Destravar
+  inbox: EnrichedPR[] // 2. Inbox
   quickWins: EnrichedPR[] // 3. Quick Wins
-  stale: EnrichedPR[]     // 4. Alerta (Stale)
-  explore: EnrichedPR[]   // 5. Exploração
-  approved: EnrichedPR[]  // 6. Aprovados
-  merged: EnrichedPR[]    // 7. Mergeados
+  stale: EnrichedPR[] // 4. Alerta (Stale)
+  explore: EnrichedPR[] // 5. Exploração
+  approved: EnrichedPR[] // 6. Aprovados
+  merged: EnrichedPR[] // 7. Mergeados
 }
 
 function businessDaysSince(dateStr: string): number {
@@ -32,14 +32,20 @@ function isMerged(pr: EnrichedPR): boolean {
 function isApprovedByMe(pr: EnrichedPR, me: string): boolean {
   const myLatestReview = pr.reviews
     .filter((r) => r.user.login === me)
-    .sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime())[0]
+    .sort(
+      (a, b) =>
+        new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime()
+    )[0]
   return myLatestReview?.state === "APPROVED"
 }
 
 function hasNewActivityAfterMyApproval(pr: EnrichedPR, me: string): boolean {
   const myLatestApproval = pr.reviews
     .filter((r) => r.user.login === me && r.state === "APPROVED")
-    .sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime())[0]
+    .sort(
+      (a, b) =>
+        new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime()
+    )[0]
   if (!myLatestApproval) return false
   return new Date(pr.updated_at) > new Date(myLatestApproval.submitted_at)
 }
@@ -59,11 +65,21 @@ function isSmall(pr: EnrichedPR): boolean {
 function hasCIGreen(pr: EnrichedPR): boolean {
   const completed = pr.check_runs.filter((c) => c.status === "completed")
   if (completed.length === 0) return false
-  return completed.every((c) => c.conclusion === "success" || c.conclusion === "neutral" || c.conclusion === "skipped")
+  return completed.every(
+    (c) =>
+      c.conclusion === "success" ||
+      c.conclusion === "neutral" ||
+      c.conclusion === "skipped"
+  )
 }
 
 function hasThirdPartyApproval(pr: EnrichedPR, me: string): boolean {
-  return pr.reviews.some((r) => r.user.login !== me && r.user.login !== pr.user.login && r.state === "APPROVED")
+  return pr.reviews.some(
+    (r) =>
+      r.user.login !== me &&
+      r.user.login !== pr.user.login &&
+      r.state === "APPROVED"
+  )
 }
 
 function isStale(pr: EnrichedPR): boolean {
@@ -75,7 +91,10 @@ function isUnlock(pr: EnrichedPR, me: string): boolean {
   if (!hasIInteracted(pr, me)) return false
   const myLastReview = pr.reviews
     .filter((r) => r.user.login === me)
-    .sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime())[0]
+    .sort(
+      (a, b) =>
+        new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime()
+    )[0]
   if (!myLastReview) return false
   return new Date(pr.updated_at) > new Date(myLastReview.submitted_at)
 }
@@ -122,7 +141,11 @@ export function groupPullRequests(prs: EnrichedPR[], me: string): PRGroups {
     }
 
     // 3. Quick Wins — PR pequeno + sem minha solicitação ou interação
-    if (isSmall(pr) && !isReviewRequestedForMe(pr, me) && !hasIInteracted(pr, me)) {
+    if (
+      isSmall(pr) &&
+      !isReviewRequestedForMe(pr, me) &&
+      !hasIInteracted(pr, me)
+    ) {
       groups.quickWins.push(pr)
       continue
     }
@@ -139,7 +162,10 @@ export function groupPullRequests(prs: EnrichedPR[], me: string): PRGroups {
 
   // Manter apenas últimos 5 mergeados
   groups.merged = groups.merged
-    .sort((a, b) => new Date(b.merged_at!).getTime() - new Date(a.merged_at!).getTime())
+    .sort(
+      (a, b) =>
+        new Date(b.merged_at!).getTime() - new Date(a.merged_at!).getTime()
+    )
     .slice(0, 5)
 
   return groups
