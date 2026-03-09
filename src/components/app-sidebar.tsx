@@ -42,7 +42,7 @@ export function AppSidebar({ onLogout, userLogin, userAvatar, token }: Props) {
             href="https://github.com/paulovictor237/pr-dashboard"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-auto text-muted-foreground hover:text-foreground transition-colors"
+            className="ml-auto flex items-center justify-center h-7 w-7 rounded-md text-violet-400 hover:text-violet-300 hover:bg-violet-500/10 transition-all duration-200"
             title="Ver no GitHub"
           >
             <GithubIcon className="h-4 w-4" />
