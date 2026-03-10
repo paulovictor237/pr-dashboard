@@ -28,12 +28,13 @@ npm run format       # Prettier format (ts, tsx)
 
 ### Data Flow
 
-1. User submits PAT → `/login` action validates against GitHub API → stored in `gh_token` httpOnly cookie (30-day expiry)
-2. Protected routes call `requireAuth()` from `lib/auth.server.ts` — redirects to `/login` if no valid token
-3. GitHub user data fetched server-side in the route loader
-4. Client-side: `useRepos()` manages selected repos in LocalStorage
-5. `useDashboard()` (TanStack Query) fetches all PRs + enriches with reviews and check runs
-6. `groupPullRequests()` in `lib/pr-groups.ts` is a pure function that assigns PRs to one of 8 groups — first match wins
+1. User submits PAT → `/login` action validates against GitHub API (client-side fetch) → stored in `gh_token` httpOnly cookie (30-day expiry)
+2. Protected routes read the cookie via `getAuthToken` server fn — redirects to `/login` if no valid token
+3. Home route loader returns only the token (no GitHub API calls server-side)
+4. Client-side: `useCurrentUser()` (TanStack Query) fetches user info from GitHub API
+5. Client-side: `useRepos()` manages selected repos in LocalStorage
+6. `useDashboard()` (TanStack Query) fetches all PRs + enriches with reviews and check runs
+7. `groupPullRequests()` in `lib/pr-groups.ts` is a pure function that assigns PRs to one of 8 groups — first match wins
 
 ### PR Groups (priority order)
 
@@ -56,6 +57,7 @@ npm run format       # Prettier format (ts, tsx)
 - `lib/auth.server.ts` — `requireAuth()` middleware, logout headers
 - `lib/query-client.ts` — TanStack Query client configuration
 - `hooks/use-dashboard.ts` — Main data hook (TanStack Query)
+- `hooks/use-current-user.ts` — Current user hook (TanStack Query, client-side)
 - `hooks/use-repos.ts` — LocalStorage-based repo management
 - `components/ui/` — shadcn/ui components (55+ components disponíveis)
 - `components/app-sidebar.tsx` — sidebar principal com branding PRIcon
@@ -70,7 +72,7 @@ Tests live alongside source files (`*.test.ts`). Use happy-dom environment. Focu
 
 ### GitHub API Rate Limits
 
-GitHub API calls are made **client-side** (via TanStack Query) to use the user's IP/token for rate limits — not the server IP.
+**Todas** as chamadas à GitHub API são feitas **client-side** (via TanStack Query) — inclusive `fetchCurrentUser`. Isso evita bloqueios 403 por IP do servidor (Cloudflare Workers) e usa a cota de rate limit do IP/token do usuário. Nunca chame `lib/github.ts` a partir de um server fn ou loader.
 
 ## UI Components — shadcn/ui
 

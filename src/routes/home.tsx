@@ -2,8 +2,8 @@ import { createFileRoute, redirect, useNavigate, useRouter } from "@tanstack/rea
 import { createServerFn } from "@tanstack/react-start"
 import { deleteCookie } from "@tanstack/react-start/server"
 import { RefreshCw } from "lucide-react"
-import { fetchCurrentUser } from "@/lib/github"
 import { useDashboard } from "@/hooks/use-dashboard"
+import { useCurrentUser } from "@/hooks/use-current-user"
 import { useRepos } from "@/hooks/use-repos"
 import { AppSidebar } from "@/components/app-sidebar"
 import { PRGroup } from "@/components/pr-group"
@@ -21,10 +21,7 @@ export const Route = createFileRoute("/home")({
   beforeLoad: ({ context }) => {
     if (!context.token) throw redirect({ to: "/login" })
   },
-  loader: async ({ context }) => {
-    const user = await fetchCurrentUser(context.token!)
-    return { token: context.token!, user }
-  },
+  loader: ({ context }) => ({ token: context.token! }),
   component: DashboardPage,
 })
 
@@ -74,7 +71,8 @@ const GROUPS = [
 ]
 
 function DashboardPage() {
-  const { token, user } = Route.useLoaderData()
+  const { token } = Route.useLoaderData()
+  const { data: user } = useCurrentUser(token)
   const { repos, refresh: refreshRepos } = useRepos()
   const navigate = useNavigate()
   const router = useRouter()
@@ -84,7 +82,7 @@ function DashboardPage() {
     isFetching,
     isError,
     refetch,
-  } = useDashboard(token, repos, user.login)
+  } = useDashboard(token, repos, user?.login ?? "")
 
   function handleRefresh() {
     refreshRepos()
@@ -105,8 +103,8 @@ function DashboardPage() {
     <SidebarProvider>
       <AppSidebar
         onLogout={handleLogout}
-        userLogin={user.login}
-        userAvatar={user.avatar_url}
+        userLogin={user?.login ?? ""}
+        userAvatar={user?.avatar_url ?? ""}
         token={token}
       />
 
