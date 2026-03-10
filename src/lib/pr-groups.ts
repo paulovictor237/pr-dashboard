@@ -57,7 +57,7 @@ function isReviewRequestedForMe(pr: EnrichedPR, me: string): boolean {
 }
 
 function hasIInteracted(pr: EnrichedPR, me: string): boolean {
-  return pr.reviews.some((r) => r.user.login === me)
+  return pr.reviews.some((r) => r.user.login === me && r.state !== "PENDING")
 }
 
 function isSmall(pr: EnrichedPR): boolean {
@@ -121,7 +121,12 @@ export function groupPullRequests(prs: Array<EnrichedPR>, me: string): PRGroups 
     }
 
     // PRs prontos para merge (aprovação de terceiros + CI verde) — não precisam de ação de revisão
-    if (hasThirdPartyApproval(pr, me) && hasCIGreen(pr)) {
+    // Exceto se fui explicitamente solicitado e ainda não revisei
+    if (
+      hasThirdPartyApproval(pr, me) &&
+      hasCIGreen(pr) &&
+      !(isReviewRequestedForMe(pr, me) && !hasIInteracted(pr, me))
+    ) {
       continue
     }
 
