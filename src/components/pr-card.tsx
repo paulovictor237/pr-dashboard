@@ -105,7 +105,7 @@ export function PRCard({ pr }: Props) {
       <CardContent className="flex items-start gap-3">
         <Tooltip>
           <TooltipTrigger asChild>
-            <Avatar size="sm" className="mt-0.5 shrink-0 cursor-default">
+            <Avatar size="lg" className="mt-0.5 shrink-0 cursor-default">
               <AvatarImage src={pr.user.avatar_url} alt={pr.user.login} />
               <AvatarFallback>{pr.user.login[0].toUpperCase()}</AvatarFallback>
             </Avatar>
