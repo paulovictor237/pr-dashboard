@@ -103,6 +103,10 @@ function isUnlock(pr: EnrichedPR, me: string): boolean {
 }
 
 export function groupPullRequests(prs: Array<EnrichedPR>, me: string): PRGroups {
+  const sorted = [...prs].sort(
+    (a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+  )
+
   const groups: PRGroups = {
     unlock: [],
     inbox: [],
@@ -113,8 +117,7 @@ export function groupPullRequests(prs: Array<EnrichedPR>, me: string): PRGroups 
     merged: [],
   }
 
-  for (const pr of prs) {
-    // 8. Mergeados (últimos 5 são filtrados no caller)
+  for (const pr of sorted) {
     if (isMerged(pr)) {
       groups.merged.push(pr)
       continue

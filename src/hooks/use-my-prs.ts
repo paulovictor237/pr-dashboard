@@ -9,14 +9,17 @@ export type MyPRGroups = {
 }
 
 function groupMyPRs(prs: Array<EnrichedPR>, login: string): MyPRGroups {
+  const sorted = [...prs].sort(
+    (a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+  )
+
   const groups: MyPRGroups = {
     needsRevision: [],
     waitingReview: [],
     readyToMerge: [],
   }
 
-  for (const pr of prs) {
-    // Get latest review state per reviewer (excluding comments-only)
+  for (const pr of sorted) {
     const reviewerMap = new Map<string, string>()
     for (const review of pr.reviews) {
       if (review.user.login !== login && review.state !== "COMMENTED") {
