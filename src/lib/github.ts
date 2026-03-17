@@ -3,6 +3,7 @@ import type {
   EnrichedPR,
   GitHubUser,
   PullRequest,
+  PullRequestAuthor,
   Review,
 } from "@/lib/github.types"
 
@@ -163,4 +164,54 @@ export async function searchRepos(
     token
   )
   return result.items
+}
+
+type SearchIssueItem = {
+  number: number
+  title: string
+  html_url: string
+  state: "open" | "closed"
+  draft?: boolean
+  created_at: string
+  updated_at: string
+  user: PullRequestAuthor
+  repository_url: string
+  pull_request?: { merged_at: string | null }
+}
+
+export async function fetchMyOpenPRs(
+  token: string,
+  login: string
+): Promise<Array<EnrichedPR>> {
+  const result = await githubFetch<{ items: Array<SearchIssueItem> }>(
+    `/search/issues?q=is:pr+is:open+author:${login}&per_page=100`,
+    token
+  )
+
+  return Promise.all(
+    result.items.map((item) => {
+      // repository_url format: https://api.github.com/repos/{owner}/{repo}
+      const repoPath = item.repository_url.replace(`${BASE_URL}/repos/`, "")
+      const [owner, repo] = repoPath.split("/")
+
+      const pr: PullRequest = {
+        id: item.number,
+        number: item.number,
+        title: item.title,
+        html_url: item.html_url,
+        state: item.state,
+        draft: item.draft ?? false,
+        merged_at: item.pull_request?.merged_at ?? null,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+        user: item.user,
+        requested_reviewers: [],
+        additions: 0,
+        deletions: 0,
+        changed_files: 0,
+      }
+
+      return enrichPR(token, owner, repo, pr)
+    })
+  )
 }
