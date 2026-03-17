@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChevronDown } from "lucide-react"
 import type { EnrichedPR } from "@/lib/github.types"
 import { PRCard } from "@/components/pr-card"
@@ -26,7 +26,19 @@ type Props = {
 }
 
 export function PRGroup({ title, icon, prs, isLoading, description }: Props) {
-  const [open, setOpen] = useState(isLoading || prs.length > 0)
+  const [open, setOpen] = useState(!!isLoading || prs.length > 0)
+  const [userToggled, setUserToggled] = useState(false)
+
+  useEffect(() => {
+    if (!userToggled && (isLoading || prs.length > 0)) {
+      setOpen(true)
+    }
+  }, [isLoading, prs.length, userToggled])
+
+  function handleOpenChange(value: boolean) {
+    setUserToggled(true)
+    setOpen(value)
+  }
 
   const trigger = (
     <CollapsibleTrigger asChild>
@@ -47,7 +59,7 @@ export function PRGroup({ title, icon, prs, isLoading, description }: Props) {
   return (
     <Collapsible
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={handleOpenChange}
       className="flex flex-col gap-3"
     >
       {description ? (
