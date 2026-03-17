@@ -1,4 +1,5 @@
-import { ChevronsUpDown, GithubIcon, LogOut, Trash2 } from "lucide-react"
+import { ChevronsUpDown, GithubIcon, GitPullRequest, LayoutDashboard, LogOut, Trash2 } from "lucide-react"
+import { Link } from "@tanstack/react-router"
 import { useRepos } from "@/hooks/use-repos"
 import { RepoCombobox } from "@/components/repo-combobox"
 import { PRIcon } from "@/components/pr-icon"
@@ -75,6 +76,30 @@ export function AppSidebar({ onLogout, userLogin, userAvatar, token }: Props) {
       </SidebarHeader>
 
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Navegação</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/home" activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground" }}>
+                    <LayoutDashboard className="h-4 w-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/my-prs" activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground" }}>
+                    <GitPullRequest className="h-4 w-4" />
+                    <span>Meus PRs</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
         <SidebarGroup>
           <SidebarGroupLabel>Repositórios</SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-col gap-2">
