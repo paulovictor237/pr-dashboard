@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Skill(atomic-commits)",
+      "Bash(npm install:*)",
+      "Bash(git:*)",
+      "Bash(npm:*)",
+      "WebFetch(domain:tanstack.com)",
+      "WebSearch",
+      "WebFetch(domain:developers.cloudflare.com)",
+      "mcp__ide__getDiagnostics"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "shadcn",
+    "context7"
+  ]
+}
