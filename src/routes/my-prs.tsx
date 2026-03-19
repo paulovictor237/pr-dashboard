@@ -32,6 +32,12 @@ const GROUPS = [
     description: "PRs seus onde algum revisor solicitou mudanças.",
   },
   {
+    key: "waitingFeedback" as const,
+    title: "Aguardando Novos Comentários",
+    icon: "💬",
+    description: "PRs que tiveram mudanças solicitadas, mas você já atualizou após o review — aguardando o revisor voltar.",
+  },
+  {
     key: "waitingReview" as const,
     title: "Aguardando Revisão",
     icon: "👀",

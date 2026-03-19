@@ -4,6 +4,7 @@ import type { EnrichedPR } from "@/lib/github.types"
 
 export type MyPRGroups = {
   needsRevision: Array<EnrichedPR>
+  waitingFeedback: Array<EnrichedPR>
   waitingReview: Array<EnrichedPR>
   readyToMerge: Array<EnrichedPR>
 }
@@ -15,6 +16,7 @@ function groupMyPRs(prs: Array<EnrichedPR>, login: string): MyPRGroups {
 
   const groups: MyPRGroups = {
     needsRevision: [],
+    waitingFeedback: [],
     waitingReview: [],
     readyToMerge: [],
   }
@@ -30,7 +32,23 @@ function groupMyPRs(prs: Array<EnrichedPR>, login: string): MyPRGroups {
     const states = Array.from(reviewerMap.values())
 
     if (states.includes("CHANGES_REQUESTED")) {
-      groups.needsRevision.push(pr)
+      const latestChangesRequested = pr.reviews
+        .filter((r) => r.user.login !== login && r.state === "CHANGES_REQUESTED")
+        .sort(
+          (a, b) =>
+            new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime()
+        )
+        .at(0)
+
+      const updatedAfterReview =
+        latestChangesRequested &&
+        new Date(pr.updated_at) > new Date(latestChangesRequested.submitted_at)
+
+      if (updatedAfterReview) {
+        groups.waitingFeedback.push(pr)
+      } else {
+        groups.needsRevision.push(pr)
+      }
     } else if (states.includes("APPROVED")) {
       groups.readyToMerge.push(pr)
     } else {

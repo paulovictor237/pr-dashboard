@@ -172,6 +172,11 @@ export function PRCard({ pr }: Props) {
                   </span>
                   <span className="text-xs text-muted-foreground"> / </span>
                   <span className="text-xs text-red-500">-{pr.deletions}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {" "}
+                    · {pr.changed_files}{" "}
+                    {pr.changed_files === 1 ? "arquivo" : "arquivos"}
+                  </span>
                 </span>
               </TooltipTrigger>
               <TooltipContent>
