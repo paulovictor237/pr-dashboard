@@ -126,11 +126,12 @@ Atualmente estou testando a abordagem do [OpenSpec](https://github.com/Fission-A
 
 O projeto está aberto a melhorias. Algumas ideias que ainda podem ser exploradas:
 
-- [ ] criar novas categorias ou adicionar mais informações aos cards
 - [ ] criar tipos de ordenação diferente.
 - [ ] filtros por projeto, data, autor ou outros critérios
-- [x] página com **Meus PRs**, mostrando PRs criados por você em todos os projetos seguidos: prontos para merge, em revisão, em desenvolvimento
-- [ ] painel colaborativo que incentive revisão entre desenvolvedores — exemplo: se você revisar um PR meu, eu reviso um seu
-- [ ] ranking gamificado dos maiores code reviewers do time
-- [ ] melhorias na interação com agentes e automação de testes para reduzir erros de LLM
+- [ ] criar novas categorias ou adicionar mais informações aos cards
+- [ ] login social com o github
 - [ ] melhorias no projeto para ser focado em rotinas diárias de CR
+- [ ] melhorias na interação com agentes e automação de testes para reduzir erros de LLM
+- [ ] ranking gamificado dos maiores code reviewers do time
+- [ ] painel colaborativo que incentive revisão entre desenvolvedores — exemplo: se você revisar um PR meu, eu reviso um seu
+- [x] página com **Meus PRs**, mostrando PRs criados por você em todos os projetos seguidos: prontos para merge, em revisão, em desenvolvimento
